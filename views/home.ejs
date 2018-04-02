@@ -1,18 +1,28 @@
-<%- include ./partials/header.ejs %>
-<div class="content-section">
-    <h2>Voting App</h2>
-    <ul class="list-section">
-        <li>Hi</li>
-        <li>Hi</li>
-        <li>Hi</li>
-        <li>Hi</li>
-        <li>Hi</li>
-        <li>Hi</li>
-        <li>Hi</li>
-        <li>Hi</li>
-        <li>Hi</li>
-        <li>Hi</li>
-    </ul>
+<% include ./partials/header.ejs %>
+
+<header class="jumbotron">
+    <div class="container">
+        <h1>Welcome to my Voting App!</h1>
+        <p>View all our polls created by users all over the world</p>
+        <p>
+            <a class="btn btn-primary btn-lg" href="/new"> Add New Poll</a>
+        </p>
+    </div>
+</header>
+
+<div class="row text-center" style="display:flex; flex-wrap: wrap;">
+    <% polls.forEach(foundPoll => { %>
+        <div class="col-md-3 col-sm-6">
+            <div class="thumbnail">
+                <div class="caption">
+                    <h4> <%= foundPoll.name %></h4>
+                </div>
+                <p>
+                    <a class="btn btn-primary" href="/<%= foundPoll._id %>">More Info</a>
+                </p>
+            </div>
+        </div>
+    <% }) %>
 </div>
 
-<%- include ./partials/footer.ejs %>
+<% include ./partials/footer.ejs %>

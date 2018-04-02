@@ -3,13 +3,11 @@ const Poll = require('../models/Poll')
 const router = express.Router()
 const {isLoggedIn, checkPollOwnership} = require('../middleware')
 router.get('/', (req, res) => {
-    /*
-    Poll.find({}, (err, polls) => {
-        res.render('home', {polls, currentUser: req.user})
-    }
 
-    */
-    res.render('home')
+    Poll.find({}, (err, polls) => {
+        if(err) throw err;
+        res.render('home', {polls, currentUser: req.user, page: 'polls'})
+    })
 })
 
 //CREATE
@@ -23,14 +21,14 @@ router.post('/', isLoggedIn, (req, res) => {
 
 //NEW - Show form to create new poll
 router.get('/new', isLoggedIn, (req, res) => {
-    res.render('polls/new.ejs')
+    res.render('/polls/new.ejs')
 })
 
 //SHOW
 router.get('/:id', (req,res) => {
     Poll.findById(req.params.id, (err, data) => {
         if(err) throw err
-        res.render('polls/show', {poll})
+        res.render('/polls/show', {poll})
     })
 })
 
@@ -38,7 +36,7 @@ router.get('/:id', (req,res) => {
 router.get('/:id/edit', checkPollOwnership, (req, res) => {
     Poll.findById(req.params.id, (err, poll) => {
         if(err) throw err
-        res.render('polls/edit', {poll})
+        res.render('/polls/edit', {poll})
     })
 })
 
