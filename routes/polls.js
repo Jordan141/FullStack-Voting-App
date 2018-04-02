@@ -12,23 +12,29 @@ router.get('/', (req, res) => {
 
 //CREATE
 router.post('/', isLoggedIn, (req, res) => {
-    const {newUser} = req.body
-    Poll.create(newUser, err => {
+    const {name} = req.body
+    console.log('name:', name)
+    const author = {id: req.user._id, username: req.user.username}
+    const options = req.body.options.split(',').map(e => e.trim())//Remove trailing whitespaces
+    const votes = new Array(options.length).fill(0)
+    console.log(options, votes)
+    Poll.create({name, options, votes, author}, err => {
         if(err) throw err;
+        console.log('Created Record')
         res.redirect('/')
     })
 })
 
 //NEW - Show form to create new poll
 router.get('/new', isLoggedIn, (req, res) => {
-    res.render('/polls/new.ejs')
+    res.render('polls/new.ejs')
 })
 
 //SHOW
 router.get('/:id', (req,res) => {
     Poll.findById(req.params.id, (err, data) => {
         if(err) throw err
-        res.render('/polls/show', {poll})
+        res.render('polls/show', {poll: data})
     })
 })
 
@@ -36,7 +42,7 @@ router.get('/:id', (req,res) => {
 router.get('/:id/edit', checkPollOwnership, (req, res) => {
     Poll.findById(req.params.id, (err, poll) => {
         if(err) throw err
-        res.render('/polls/edit', {poll})
+        res.render('polls/edit', {poll})
     })
 })
 
@@ -48,7 +54,7 @@ router.put('/:id', checkPollOwnership, (req,res) => {
             throw err
         }
         req.flash("success","Successfully Updated!")
-        res.redirect('/polls/' + req.params.id)
+        res.redirect('/' + req.params.id)
     })
 
 })
