@@ -1,0 +1,11 @@
+body {
+    background-image: url('../img/northern-lights.jpg')
+}
+.content-section {
+    background: #303030;
+}
+
+footer {
+    background-color: whitesmoke;
+    width: 100%;
+}
