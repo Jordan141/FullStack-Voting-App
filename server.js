@@ -10,8 +10,8 @@ const express         = require('express'),
     flash             = require('connect-flash'),
     PORT              = process.env.PORT || 8080,
     User              = require('./models/user'),
-    {databaseURL}     = require('./config.json')
-
+    {databaseURL}     = require('./config.json'),
+    favicon           = require('serve-favicon')
 
 const pollRoutes = require('./routes/polls')
 const userRoutes = require('./routes/user')
@@ -20,6 +20,7 @@ const userRoutes = require('./routes/user')
 mongoose.connect(databaseURL)
 app.set('view engine', 'ejs')
 app.use(bodyParser.urlencoded({extended: true}))
+app.use(favicon(__dirname + '/public/favicon.ico'))
 app.use(express.static(__dirname + '/public'))
 
 //PASSPORT CONFIGURATION
@@ -47,6 +48,7 @@ app.use((req,res,next) => {
     next()
     }
 )
+
 
 app.get('/', (req , res) => res.redirect('/polls'))
 app.use('/polls/', pollRoutes)
