@@ -15,7 +15,7 @@
         <div class="col-md-3 col-sm-6">
             <div class="thumbnail">
                 <div class="caption">
-                    <canvas id="myChart" width="400" height="400" data='{"name":"<%= foundPoll.name %>", "options": [<%= foundPoll.options %>] }'></canvas>
+                    <canvas id="myChart" width="400" height="400" data='{"name":"<%= foundPoll.name %>", "options": [<%= foundPoll.options %>], "votes": [<%= foundPoll.votes %>]}'></canvas>
                     <h4> <%= foundPoll.name %></h4>
                 </div>
                 <p>
@@ -43,20 +43,22 @@ window.onload = function(){
         var charts = [].slice.call(document.getElementById('chartHolder').querySelectorAll('#myChart'))
         console.log(charts)
         var drawnCharts = charts.map((chart,i) => {
-            const {name, options} = JSON.parse(chart.getAttribute('data'))
+            const {name, options, votes} = JSON.parse(chart.getAttribute('data'))
             const chartConfig = {
                 type: 'pie',
                 data: {
                     datasets:[{
-                        data: options,
+                        data: votes,
                         backgroundColor: [red, orange, yellow, green, blue, purple, grey]
-                    }]
+                    }],
+                    labels: options
                 },
                 options: {
                     responsive: true
                 }
             }
             console.log("Chart", chart)
+            Chart.defaults.global.legend.display = false
             return new Chart(chart.getContext('2d'), chartConfig)
         })
         console.log(drawnCharts)
