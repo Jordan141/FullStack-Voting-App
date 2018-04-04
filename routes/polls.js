@@ -2,8 +2,9 @@ const express = require('express')
 const Poll = require('../models/Poll')
 const router = express.Router()
 const {isLoggedIn, checkPollOwnership} = require('../middleware')
-router.get('/', (req, res) => {
 
+
+router.get('/', (req, res) => {
     Poll.find({}, (err, polls) => {
         if(err) throw err;
         res.render('home', {polls, currentUser: req.user, page: 'polls'})
@@ -48,13 +49,16 @@ router.get('/:id/edit', checkPollOwnership, (req, res) => {
 
 //UPDATE
 router.put('/:id', checkPollOwnership, (req,res) => {
-    const newData = {...req.body.poll}
-    Poll.findByIdAndUpdate(req.params.id, {$set: newData} , err => {
+    const {name} = {...req.body.poll}
+    const unparsedOptions = req.body.poll.options
+    const options = unparsedOptions.split(',').map(x => x.trim())
+    const newData = {name, options}
+    Poll.findByIdAndUpdate(req.params.id, {$set: {newData}} , err => {
         if(err){
             throw err
         }
         req.flash("success","Successfully Updated!")
-        res.redirect('/' + req.params.id)
+        res.redirect('/polls/' + req.params.id)
     })
 
 })
@@ -66,6 +70,17 @@ router.delete('/:id', checkPollOwnership, (req,res) => {
             return err
         }
         res.redirect('/')
+    })
+})
+
+
+//CUSTOM VOTE ROUTE
+router.post('/:id', (req, res) => {
+    const votes = req.body.votes.map(e => Number(e))//Schema expects votes to be numbers
+    console.log(votes, req.params.id)
+    Poll.findByIdAndUpdate(req.params.id, {$set: {votes}}, err => {
+        if(err) throw err;
+        return res.redirect(200, '/polls/' + req.params.id)
     })
 })
 

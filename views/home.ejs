@@ -5,20 +5,21 @@
         <h1>Welcome to my Voting App!</h1>
         <p>View all our polls created by users all over the world</p>
         <p>
-            <a class="btn btn-primary btn-lg" href="/new"> Add New Poll</a>
+            <a class="btn btn-primary btn-lg" href="/polls/new"> Add New Poll</a>
         </p>
     </div>
 </header>
 
-<div class="row text-center" style="display:flex; flex-wrap: wrap;">
+<div class="row text-center" id="chartHolder" style="display:flex; flex-wrap: wrap;">
     <% polls.forEach(foundPoll => { %>
         <div class="col-md-3 col-sm-6">
             <div class="thumbnail">
                 <div class="caption">
+                    <canvas id="myChart" width="400" height="400" data='{"name":"<%= foundPoll.name %>", "options": [<%= foundPoll.options %>] }'></canvas>
                     <h4> <%= foundPoll.name %></h4>
                 </div>
                 <p>
-                    <a class="btn btn-primary" href="/<%= foundPoll._id %>">More Info</a>
+                    <a class="btn btn-primary" href="/polls/<%= foundPoll._id %>">More Info</a>
                 </p>
             </div>
         </div>
@@ -26,3 +27,38 @@
 </div>
 
 <% include ./partials/footer.ejs %>
+<script>
+window.chartColors = {
+    red: 'rgb(255, 99, 132)',
+	orange: 'rgb(255, 159, 64)',
+	yellow: 'rgb(255, 205, 86)',
+	green: 'rgb(75, 192, 192)',
+	blue: 'rgb(54, 162, 235)',
+	purple: 'rgb(153, 102, 255)',
+	grey: 'rgb(201, 203, 207)'
+}
+
+window.onload = function(){
+        var {red, orange, yellow, green, blue, purple, grey} = window.chartColors
+        var charts = [].slice.call(document.getElementById('chartHolder').querySelectorAll('#myChart'))
+        console.log(charts)
+        var drawnCharts = charts.map((chart,i) => {
+            const {name, options} = JSON.parse(chart.getAttribute('data'))
+            const chartConfig = {
+                type: 'pie',
+                data: {
+                    datasets:[{
+                        data: options,
+                        backgroundColor: [red, orange, yellow, green, blue, purple, grey]
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            }
+            console.log("Chart", chart)
+            return new Chart(chart.getContext('2d'), chartConfig)
+        })
+        console.log(drawnCharts)
+}
+</script>

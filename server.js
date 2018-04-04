@@ -48,8 +48,8 @@ app.use((req,res,next) => {
     }
 )
 
-
-app.use('/', pollRoutes)
+app.get('/', (req , res) => res.redirect('/polls'))
+app.use('/polls/', pollRoutes)
 app.use('/api/', userRoutes)
 
 app.listen(PORT)
