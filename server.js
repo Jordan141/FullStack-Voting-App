@@ -9,7 +9,7 @@ const express         = require('express'),
     app               = express(),
     flash             = require('connect-flash'),
     PORT              = process.env.PORT || 8080,
-    User              = require('./models/user'),
+    User              = require('./models/User'),
     {databaseURL}     = require('./config.json'),
     favicon           = require('serve-favicon')
 
